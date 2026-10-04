@@ -7,6 +7,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
+import br.edu.fiap.marketplace.exception.AlteracaoEstoqueInvalidaException;
+import br.edu.fiap.marketplace.exception.PrecoInvalidoException;
 
 /** Produto anunciado no catálogo do marketplace. */
 @Entity
@@ -50,27 +52,42 @@ public class CatalogoProduto {
 
     /** TODO rejeitar preço nulo, zero ou negativo. */
     public void alterarPreco(BigDecimal novoPreco) {
-        throw new UnsupportedOperationException("TODO implementar alterarPreco");
+        if (novoPreco == null || novoPreco.signum() <= 0) {
+            throw new PrecoInvalidoException();
+        }
+        this.preco = novoPreco;
     }
 
     /** TODO diminuir o estoque sem permitir saldo negativo. */
     public void baixarEstoque(int quantidade) {
-        throw new UnsupportedOperationException("TODO implementar baixarEstoque");
+        if (quantidade <= 0 || quantidade > this.estoque) {
+            throw new AlteracaoEstoqueInvalidaException();
+        }
+        this.estoque -= quantidade;
     }
 
     /** TODO aceitar somente reposição positiva. */
     public void reporEstoque(int quantidade) {
-        throw new UnsupportedOperationException("TODO implementar reporEstoque");
+        if (quantidade <= 0) {
+            throw new AlteracaoEstoqueInvalidaException();
+        }
+        this.estoque += quantidade;
     }
 
     /** TODO disponibilizar o produto para compra. */
     public void ativar() {
-        throw new UnsupportedOperationException("TODO implementar ativar");
+        this.ativo = true;
     }
 
     /** TODO retirar o produto das novas compras. */
     public void desativar() {
-        throw new UnsupportedOperationException("TODO implementar desativar");
+        this.ativo = false;
+    }
+
+    public void atualizar(String nome, String descricao, BigDecimal preco) {
+        this.nome = nome;
+        this.descricao = descricao;
+        this.preco = preco;
     }
 
     public Long getId() { return id; }

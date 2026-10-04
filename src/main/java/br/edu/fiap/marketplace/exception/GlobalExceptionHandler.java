@@ -19,57 +19,75 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ApiErrorResponse> tratarValidacao(
-            MethodArgumentNotValidException erro,
-            HttpServletRequest request) {
-        Map<String, String> campos = new LinkedHashMap<>();
-        erro.getBindingResult().getFieldErrors().forEach(fieldError ->
-                campos.putIfAbsent(fieldError.getField(), fieldError.getDefaultMessage()));
-        return resposta(
-                HttpStatus.BAD_REQUEST,
-                "Existem campos inválidos na requisição.",
-                request,
-                campos);
-    }
+        /** Converte um recurso não encontrado em HTTP 404. */
+        @ExceptionHandler(RecursoNaoEncontradoException.class)
+        public ResponseEntity<ApiErrorResponse> tratarNaoEncontrado(
+                RecursoNaoEncontradoException erro,
+                HttpServletRequest request) {
+                return resposta(HttpStatus.NOT_FOUND, erro.getMessage(), request, Map.of());
+        }
 
-    @ExceptionHandler({
-            HttpMessageNotReadableException.class,
-            MethodArgumentTypeMismatchException.class
-    })
-    public ResponseEntity<ApiErrorResponse> tratarEntradaInvalida(
-            Exception erro,
-            HttpServletRequest request) {
-        return resposta(
-                HttpStatus.BAD_REQUEST,
-                "A requisição contém um valor ou formato inválido.",
-                request,
-                Map.of());
-    }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiErrorResponse> tratarInesperado(
-            Exception erro,
-            HttpServletRequest request) {
-        return resposta(
-                HttpStatus.INTERNAL_SERVER_ERROR,
-                "Erro interno não esperado.",
-                request,
-                Map.of());
-    }
+        /** Converte uma regra de negócio violada em HTTP 409. */
+        @ExceptionHandler(ConflitoDeNegocioException.class)
+        public ResponseEntity<ApiErrorResponse> tratarConflito(
+                ConflitoDeNegocioException erro,
+                HttpServletRequest request) {
+                return resposta(HttpStatus.CONFLICT, erro.getMessage(), request, Map.of());
+        }
 
-    private ResponseEntity<ApiErrorResponse> resposta(
-            HttpStatus status,
-            String mensagem,
-            HttpServletRequest request,
-            Map<String, String> campos) {
-        ApiErrorResponse response = new ApiErrorResponse(
-                Instant.now(),
-                status.value(),
-                status.getReasonPhrase(),
-                mensagem,
-                request.getRequestURI(),
-                campos);
-        return ResponseEntity.status(status).body(response);
-    }
+
+        @ExceptionHandler(MethodArgumentNotValidException.class)
+        public ResponseEntity<ApiErrorResponse> tratarValidacao(
+                MethodArgumentNotValidException erro,
+                HttpServletRequest request) {
+                Map<String, String> campos = new LinkedHashMap<>();
+                erro.getBindingResult().getFieldErrors().forEach(fieldError ->
+                        campos.putIfAbsent(fieldError.getField(), fieldError.getDefaultMessage()));
+                return resposta(
+                        HttpStatus.BAD_REQUEST,
+                        "Existem campos inválidos na requisição.",
+                        request,
+                        campos);
+        }
+
+        @ExceptionHandler({
+                HttpMessageNotReadableException.class,
+                MethodArgumentTypeMismatchException.class
+        })
+        public ResponseEntity<ApiErrorResponse> tratarEntradaInvalida(
+                Exception erro,
+                HttpServletRequest request) {
+                return resposta(
+                        HttpStatus.BAD_REQUEST,
+                        "A requisição contém um valor ou formato inválido.",
+                        request,
+                        Map.of());
+        }
+
+        @ExceptionHandler(Exception.class)
+        public ResponseEntity<ApiErrorResponse> tratarInesperado(
+                Exception erro,
+                HttpServletRequest request) {
+                return resposta(
+                        HttpStatus.INTERNAL_SERVER_ERROR,
+                        "Erro interno não esperado.",
+                        request,
+                        Map.of());
+        }
+
+        private ResponseEntity<ApiErrorResponse> resposta(
+                HttpStatus status,
+                String mensagem,
+                HttpServletRequest request,
+                Map<String, String> campos) {
+                ApiErrorResponse response = new ApiErrorResponse(
+                        Instant.now(),
+                        status.value(),
+                        status.getReasonPhrase(),
+                        mensagem,
+                        request.getRequestURI(),
+                        campos);
+                return ResponseEntity.status(status).body(response);
+        }
 }

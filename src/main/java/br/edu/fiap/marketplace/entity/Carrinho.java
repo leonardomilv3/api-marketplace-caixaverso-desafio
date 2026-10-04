@@ -13,6 +13,9 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.Instant;
+import br.edu.fiap.marketplace.exception.AlteracaoQuantidadeCarrinhoException;
+import br.edu.fiap.marketplace.exception.CancelarCarrinhoException;
+import br.edu.fiap.marketplace.exception.FinalizarCarrinhoException;
 
 /**
  * Representa uma escolha simples de produto, quantidade e usuário.
@@ -57,22 +60,31 @@ public class Carrinho {
 
     /** TODO aceitar somente quantidade positiva enquanto o carrinho estiver aberto. */
     public void alterarQuantidade(int novaQuantidade) {
-        throw new UnsupportedOperationException("TODO implementar alterarQuantidade");
+        if (novaQuantidade <= 0 || status != StatusCarrinho.ABERTO) {
+            throw new AlteracaoQuantidadeCarrinhoException();
+        }
+        quantidade = novaQuantidade;
     }
 
     /** TODO calcular preço do produto multiplicado pela quantidade. */
     public BigDecimal calcularTotal() {
-        throw new UnsupportedOperationException("TODO implementar calcularTotal");
+        return produto.getPreco().multiply(BigDecimal.valueOf(quantidade));
     }
 
     /** TODO impedir finalizar carrinho cancelado ou já finalizado. */
     public void finalizar() {
-        throw new UnsupportedOperationException("TODO implementar finalizar");
+        if (status != StatusCarrinho.ABERTO) {
+            throw new FinalizarCarrinhoException();
+        }
+        status = StatusCarrinho.FINALIZADO;
     }
 
     /** TODO impedir alterações posteriores ao cancelamento. */
     public void cancelar() {
-        throw new UnsupportedOperationException("TODO implementar cancelar");
+        if (status != StatusCarrinho.ABERTO) {
+            throw new CancelarCarrinhoException();
+        }
+        status = StatusCarrinho.CANCELADO;
     }
 
     public Long getId() { return id; }

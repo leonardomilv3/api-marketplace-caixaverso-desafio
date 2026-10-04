@@ -14,6 +14,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.Instant;
+import br.edu.fiap.marketplace.exception.AprovacaoPagamentoException;
 
 /** Confirma o resultado de pagamento de um carrinho pertencente a um usuário. */
 @Entity
@@ -62,17 +63,25 @@ public class ConfirmacaoPagamento {
 
     /** TODO aprovar somente pagamento pendente e finalizar o carrinho. */
     public void aprovar() {
-        throw new UnsupportedOperationException("TODO implementar aprovar");
+        if (status != StatusPagamento.PENDENTE) {
+            throw new AprovacaoPagamentoException();
+        }
+        status = StatusPagamento.PAGO;
+        confirmadoEm = Instant.now();
+        carrinho.finalizar();
     }
 
     /** TODO recusar somente pagamento pendente. */
     public void recusar() {
-        throw new UnsupportedOperationException("TODO implementar recusar");
+        if (status != StatusPagamento.PENDENTE) {
+            throw new AprovacaoPagamentoException();
+        }
+        status = StatusPagamento.RECUSADO;
     }
 
     /** TODO devolver verdadeiro apenas para status PAGO. */
     public boolean estaPago() {
-        throw new UnsupportedOperationException("TODO implementar estaPago");
+        return status == StatusPagamento.PAGO;
     }
 
     public Long getId() { return id; }
