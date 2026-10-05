@@ -46,7 +46,6 @@ public class ConfirmacaoPagamentoService {
 
         Optional<Carrinho> carrinho = carrinhoRepository.findById(request.carrinhoId());
         Optional<Usuario> usuario = usuarioRepository.findById(request.usuarioId());
-        
 
         ConfirmacaoPagamento confirmacaoPagamento = new ConfirmacaoPagamento(
             carrinho.get(),
@@ -54,7 +53,6 @@ public class ConfirmacaoPagamentoService {
             request.idPagamento(),
             carrinho.get().calcularTotal()
         );
-
 
         return ConfirmacaoPagamentoResponse.de(
             confirmacaoPagamentoRepository.save(confirmacaoPagamento));
@@ -71,6 +69,7 @@ public class ConfirmacaoPagamentoService {
     public ConfirmacaoPagamentoResponse aprovar(Long id) {
         ConfirmacaoPagamento confirmacaoPagamento = buscarEntidade(id);
         confirmacaoPagamento.aprovar();
+        confirmacaoPagamentoRepository.save(confirmacaoPagamento);
         return ConfirmacaoPagamentoResponse.de(confirmacaoPagamento);
     }
 
@@ -78,6 +77,7 @@ public class ConfirmacaoPagamentoService {
     public ConfirmacaoPagamentoResponse recusar(Long id) {
         ConfirmacaoPagamento confirmacaoPagamento = buscarEntidade(id);
         confirmacaoPagamento.recusar();
+        confirmacaoPagamentoRepository.save(confirmacaoPagamento);
         return ConfirmacaoPagamentoResponse.de(confirmacaoPagamento);
     }
 

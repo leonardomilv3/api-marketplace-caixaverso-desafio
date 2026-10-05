@@ -2,6 +2,18 @@
 
 Projeto inicial para um grupo completar uma API multicamada com Spring Boot, JPA, PostgreSQL, BCrypt, JWT e Swagger.
 
+
+## Fluxograma
+
+![fluxograma-marktplace](./assets/fluxograma-marktplace.png)
+
+
+## Historico de commits do fork do repositorio caixa
+
+
+![historico](./assets/historico-commits.png)
+
+
 ## O que já está pronto
 
 - JDK 25 e Maven;

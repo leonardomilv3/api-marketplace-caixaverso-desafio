@@ -49,6 +49,7 @@ public class CatalogoProdutoService {
     public CatalogoProdutoResponse atualizar(Long id, CatalogoProdutoRequest request) {
         CatalogoProduto produto = buscarProduto(id);
         produto.atualizar(request.nome(), request.descricao(), request.preco());
+        catalogoProdutoRepository.save(produto);
         return CatalogoProdutoResponse.de(catalogoProdutoRepository.save(produto));
     }
 
@@ -57,6 +58,7 @@ public class CatalogoProdutoService {
     public CatalogoProdutoResponse reporEstoque(Long id, AtualizarEstoqueRequest request) {
         CatalogoProduto produto = buscarProduto(id);
         produto.reporEstoque(request.quantidade());
+        catalogoProdutoRepository.save(produto);
         return CatalogoProdutoResponse.de(catalogoProdutoRepository.save(produto));
     }
 
@@ -65,6 +67,7 @@ public class CatalogoProdutoService {
     public CatalogoProdutoResponse diminuirEstoque(Long id, AtualizarEstoqueRequest request) {
         CatalogoProduto produto = buscarProduto(id);
         produto.baixarEstoque(request.quantidade());
+        catalogoProdutoRepository.save(produto);
         return CatalogoProdutoResponse.de(catalogoProdutoRepository.save(produto));
     }
 
@@ -73,6 +76,7 @@ public class CatalogoProdutoService {
     public CatalogoProdutoResponse ativar(Long id) {
         CatalogoProduto produto = buscarProduto(id);
         produto.ativar();
+        catalogoProdutoRepository.save(produto);
         return CatalogoProdutoResponse.de(catalogoProdutoRepository.save(produto));
     }
 
@@ -81,6 +85,7 @@ public class CatalogoProdutoService {
     public CatalogoProdutoResponse desativar(Long id) {
         CatalogoProduto produto = buscarProduto(id);
         produto.desativar();
+        catalogoProdutoRepository.save(produto);
         return CatalogoProdutoResponse.de(catalogoProdutoRepository.save(produto));
     }
 

@@ -53,6 +53,7 @@ public class UsuarioService {
     public UsuarioResponse ativar(Long id) {
         Usuario usuario = buscarUsuario(id);
         usuario.ativar();
+        usuarioRepository.save(usuario);
         return UsuarioResponse.de(usuario);
     }
 
@@ -60,6 +61,7 @@ public class UsuarioService {
     public UsuarioResponse desativar(Long id) {
         Usuario usuario = buscarUsuario(id);
         usuario.desativar();
+        usuarioRepository.save(usuario);
         return UsuarioResponse.de(usuario);
     }
 
@@ -69,6 +71,7 @@ public class UsuarioService {
         Usuario usuario = buscarUsuario(id);
         String novaSenhaCriptografada = passwordEncoder.encode(novaSenha);
         usuario.atualizarSenhaHash(novaSenhaCriptografada);
+        usuarioRepository.save(usuario);
         return UsuarioResponse.de(usuario); 
     }
 

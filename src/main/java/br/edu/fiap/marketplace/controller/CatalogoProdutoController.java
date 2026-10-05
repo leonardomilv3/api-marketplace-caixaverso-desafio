@@ -46,7 +46,7 @@ public class CatalogoProdutoController {
         @ApiResponse (responseCode = "201", description = "Produto criado"),
         @ApiResponse (responseCode = "400", description = "Dados inválidos")
     })
-    public ResponseEntity<CatalogoProdutoResponse> postMethodName(@RequestBody CatalogoProdutoRequest request) {
+    public ResponseEntity<CatalogoProdutoResponse> criar(@RequestBody CatalogoProdutoRequest request) {
         CatalogoProdutoResponse response = catalogoProdutoService.cadastrar(request);
 
         return ResponseEntity
